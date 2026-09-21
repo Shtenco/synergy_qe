@@ -9,6 +9,8 @@ contract QEToken is ERC20, AccessControl, IQEToken {
     bytes32 public constant QE_CONTROLLER_ROLE = keccak256("QE_CONTROLLER_ROLE");
     bytes32 public constant COLLATERAL_ADAPTER_ROLE = keccak256("COLLATERAL_ADAPTER_ROLE");
 
+    uint256 public override temporarySupply;
+
     error ZeroAddress();
     error ZeroAmount();
 
@@ -27,6 +29,7 @@ contract QEToken is ERC20, AccessControl, IQEToken {
     {
         if (to == address(0)) revert ZeroAddress();
         if (amount == 0) revert ZeroAmount();
+        temporarySupply += amount;
         _mint(to, amount);
     }
 
@@ -45,6 +48,8 @@ contract QEToken is ERC20, AccessControl, IQEToken {
     {
         if (from == address(0)) revert ZeroAddress();
         if (amount == 0) revert ZeroAmount();
+        if (amount > temporarySupply) revert ZeroAmount();
+        temporarySupply -= amount;
         _burn(from, amount);
     }
 }
