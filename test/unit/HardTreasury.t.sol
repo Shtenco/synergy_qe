@@ -72,4 +72,15 @@ contract HardTreasuryTest is Test {
         treasury.setExpectedExitCosts(1e18);
         assertEq(treasury.hardNAV(), 8e18);
     }
+
+    function test_DisableAndReregisterCannotDoubleCountAsset() public {
+        usdc.mint(address(treasury), 10_000_000);
+        assertEq(treasury.hardNAV(), 9e18);
+
+        treasury.disableAsset(address(usdc));
+        treasury.registerAsset(address(usdc), 9_000, 10_000);
+
+        assertEq(treasury.registeredAssetCount(), 1);
+        assertEq(treasury.hardNAV(), 9e18);
+    }
 }
