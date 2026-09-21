@@ -10,7 +10,7 @@ contract MockUnwindAdapter is IUnwindAdapter {
         values[keccak256(abi.encode(asset, amount))] = valueUsd18;
     }
 
-    function quoteValue(address asset, uint256 amount) external view returns (uint256 valueUsd18) {
+    function quoteValue(address asset, uint256 amount) external view override returns (uint256 valueUsd18) {
         return values[keccak256(abi.encode(asset, amount))];
     }
 }
