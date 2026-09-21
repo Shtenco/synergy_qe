@@ -22,6 +22,7 @@ contract QEController is AccessControl, IQEController {
     uint256 public override totalOutstanding;
     uint256 public nextCycleId = 1;
     SystemMode public override mode;
+    mapping(bytes32 => address) public facilitatorOperator;
 
     error ZeroAddress();
     error ZeroAmount();
@@ -30,6 +31,7 @@ contract QEController is AccessControl, IQEController {
     error RiskCapacityExceeded();
     error InvalidModeTransition();
     error AccountingMismatch();
+    error UnauthorizedFacilitator();
 
     constructor(
         address admin,
@@ -76,6 +78,14 @@ contract QEController is AccessControl, IQEController {
         mode = newMode;
     }
 
+    function setFacilitatorOperator(bytes32 facilitatorId, address operator)
+        external
+        onlyRole(DEFAULT_ADMIN_ROLE)
+    {
+        if (operator == address(0)) revert ZeroAddress();
+        facilitatorOperator[facilitatorId] = operator;
+    }
+
     function openTemporaryCycle(
         bytes32 facilitatorId,
         uint256 requestedAmount,
@@ -84,6 +94,9 @@ contract QEController is AccessControl, IQEController {
     ) external override returns (uint256 cycleId) {
         if (requestedAmount == 0) revert ZeroAmount();
         if (receiver == address(0)) revert ZeroAddress();
+        if (facilitatorOperator[facilitatorId] != msg.sender) {
+            revert UnauthorizedFacilitator();
+        }
         if (
             mode == SystemMode.CONTRACTION ||
             mode == SystemMode.GLOBAL_SETTLEMENT
