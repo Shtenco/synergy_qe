@@ -127,7 +127,7 @@ contract FacilitatorRegistry is AccessControl, IFacilitatorRegistry {
         return uint256(f.capacity) - uint256(f.outstanding);
     }
 
-    function maxTtlOf(bytes32 facilitatorId) external view returns (uint32) {
+    function maxTtlOf(bytes32 facilitatorId) external view override returns (uint32) {
         return facilitator[facilitatorId].maxTtl;
     }
 
