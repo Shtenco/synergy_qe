@@ -107,6 +107,7 @@ contract QECoreInvariants is StdInvariant, Test {
 
         handler = new QEInvariantHandler(controller, escrow);
         controller.grantRole(controller.SETTLEMENT_ROLE(), address(handler));
+        controller.setFacilitatorOperator(ARB, address(handler));
 
         targetContract(address(handler));
     }
