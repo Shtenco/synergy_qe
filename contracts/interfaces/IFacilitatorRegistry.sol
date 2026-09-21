@@ -5,6 +5,7 @@ interface IFacilitatorRegistry {
     function totalOutstanding() external view returns (uint256);
     function outstandingOf(bytes32 facilitatorId) external view returns (uint256);
     function remainingCapacity(bytes32 facilitatorId) external view returns (uint256);
+    function maxTtlOf(bytes32 facilitatorId) external view returns (uint32);
     function increaseOutstanding(bytes32 facilitatorId, uint256 amount) external;
     function decreaseOutstanding(bytes32 facilitatorId, uint256 amount) external;
 }
