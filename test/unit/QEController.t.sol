@@ -55,6 +55,7 @@ contract QEControllerTest is Test {
         registry.grantRole(registry.CONTROLLER_ROLE(), address(controller));
         escrow.grantRole(escrow.CONTROLLER_ROLE(), address(controller));
         controller.setGlobalCapacity(150e18);
+        controller.setFacilitatorOperator(ARB, address(this));
     }
 
     function test_OpenCycleMaintainsFourWayDebtEquality() public {
@@ -80,6 +81,12 @@ contract QEControllerTest is Test {
         assertEq(controller.totalOutstanding(), 55e18);
         assertEq(registry.totalOutstanding(), 55e18);
         assertEq(escrow.totalPrincipalOutstanding(), 55e18);
+    }
+
+    function test_UnauthorizedCallerCannotConsumeFacilitatorBucket() public {
+        vm.prank(address(0xBAD));
+        vm.expectRevert();
+        controller.openTemporaryCycle(ARB, 1e18, keccak256("route"), alice);
     }
 
     function test_GlobalCapacityBlocksMint() public {
