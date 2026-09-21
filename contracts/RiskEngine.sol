@@ -4,6 +4,7 @@ pragma solidity ^0.8.20;
 import {AccessControl} from "@openzeppelin/contracts/access/AccessControl.sol";
 import {IHardTreasury} from "./interfaces/IHardTreasury.sol";
 import {IRiskEngine} from "./interfaces/IRiskEngine.sol";
+import {IStabilityPool} from "./interfaces/IStabilityPool.sol";
 import {SystemMode} from "./types/QETypes.sol";
 
 contract RiskEngine is AccessControl, IRiskEngine {
@@ -12,6 +13,7 @@ contract RiskEngine is AccessControl, IRiskEngine {
     uint256 internal constant BPS = 10_000;
 
     IHardTreasury public immutable hardTreasury;
+    IStabilityPool public stabilityPool;
 
     uint16 public hardNavCapacityBps = 2_500;
     uint16 public defensiveMultiplierBps = 5_000;
@@ -35,6 +37,14 @@ contract RiskEngine is AccessControl, IRiskEngine {
         hardTreasury = IHardTreasury(hardTreasury_);
         _grantRole(DEFAULT_ADMIN_ROLE, admin);
         _grantRole(RISK_REPORTER_ROLE, admin);
+    }
+
+    function setStabilityPool(address stabilityPool_)
+        external
+        onlyRole(DEFAULT_ADMIN_ROLE)
+    {
+        if (stabilityPool_ == address(0)) revert ZeroAddress();
+        stabilityPool = IStabilityPool(stabilityPool_);
     }
 
     function setFacilitatorRiskCap(bytes32 facilitatorId, uint256 cap)
@@ -98,10 +108,14 @@ contract RiskEngine is AccessControl, IRiskEngine {
         uint256 hardNavCap =
             (hardTreasury.hardNAV() * hardNavCapacityBps) / BPS;
 
+        uint256 effectiveLossBudget = address(stabilityPool) == address(0)
+            ? lossBudgetUsd18
+            : stabilityPool.availableLossBudgetUsd18();
+
         uint256 lossBudgetCap =
             maxLossBps == 0
                 ? 0
-                : (lossBudgetUsd18 * BPS) / uint256(maxLossBps);
+                : (effectiveLossBudget * BPS) / uint256(maxLossBps);
 
         uint256 cap = _min(
             facilitatorRiskCap[facilitatorId],
