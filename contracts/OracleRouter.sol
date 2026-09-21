@@ -49,7 +49,7 @@ contract OracleRouter is AccessControl, IOracleRouter {
             unwindAdapter == address(0)
         ) revert ZeroAddress();
         if (decimals_ > 18) revert InvalidDecimals();
-        if (maxDivergenceBps > BPS) revert InvalidBps();
+        if (maxDivergenceBps > BPS || maxAge == 0) revert InvalidBps();
 
         config[asset] = OracleConfig({
             enabled: true,
@@ -69,6 +69,7 @@ contract OracleRouter is AccessControl, IOracleRouter {
     function conservativeValue(address asset, uint256 amount)
         external
         view
+        override
         returns (uint256 valueUsd18)
     {
         OracleConfig memory c = config[asset];
