@@ -98,6 +98,10 @@ contract HardTreasury is AccessControl, IHardTreasury {
         return (executableValue * c.haircutBps) / BPS;
     }
 
+    function isEndogenous(address asset) external view override returns (bool) {
+        return endogenousAsset[asset];
+    }
+
     function grossHardAssets() public view returns (uint256 total) {
         for (uint256 i; i < registeredAssets.length; ++i) {
             total += hardValue(registeredAssets[i]);
