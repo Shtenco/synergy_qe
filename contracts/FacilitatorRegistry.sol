@@ -45,7 +45,7 @@ contract FacilitatorRegistry is AccessControl, IFacilitatorRegistry {
         uint16 riskWeightBps
     ) external onlyRole(DEFAULT_ADMIN_ROLE) {
         if (facilitator[facilitatorId].exists) revert FacilitatorExists();
-        if (capacity == 0 || riskWeightBps == 0) revert InvalidCapacity();
+        if (capacity == 0 || maxTtl == 0 || maxLossBps > 10_000 || riskWeightBps == 0 || riskWeightBps > 10_000) revert InvalidCapacity();
 
         facilitator[facilitatorId] = Facilitator({
             exists: true,
