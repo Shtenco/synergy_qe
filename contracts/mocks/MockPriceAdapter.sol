@@ -15,7 +15,7 @@ contract MockPriceAdapter is IPriceAdapter {
         prices[asset] = PriceData(priceUsd18, updatedAt);
     }
 
-    function getPrice(address asset) external view returns (uint256 priceUsd18, uint48 updatedAt) {
+    function getPrice(address asset) external view override returns (uint256 priceUsd18, uint48 updatedAt) {
         PriceData memory p = prices[asset];
         return (p.priceUsd18, p.updatedAt);
     }
