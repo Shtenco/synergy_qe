@@ -148,7 +148,7 @@ contract CycleEscrow is AccessControl, ICycleEscrow {
         return cycle[cycleId].routeHash;
     }
 
-    function facilitatorOf(uint256 cycleId) external view returns (bytes32) {
+    function facilitatorOf(uint256 cycleId) external view override returns (bytes32) {
         return cycle[cycleId].facilitatorId;
     }
 
