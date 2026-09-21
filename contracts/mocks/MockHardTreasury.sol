@@ -19,4 +19,8 @@ contract MockHardTreasury is IHardTreasury {
     function hardNAV() external view override returns (uint256) {
         return nav;
     }
+
+    function isEndogenous(address) external pure override returns (bool) {
+        return false;
+    }
 }
