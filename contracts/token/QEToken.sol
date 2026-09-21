@@ -25,6 +25,7 @@ contract QEToken is ERC20, AccessControl, IQEToken {
 
     function qeMint(address to, uint256 amount)
         external
+        override
         onlyRole(QE_CONTROLLER_ROLE)
     {
         if (to == address(0)) revert ZeroAddress();
@@ -35,6 +36,7 @@ contract QEToken is ERC20, AccessControl, IQEToken {
 
     function collateralMint(address to, uint256 amount)
         external
+        override
         onlyRole(COLLATERAL_ADAPTER_ROLE)
     {
         if (to == address(0)) revert ZeroAddress();
@@ -44,6 +46,7 @@ contract QEToken is ERC20, AccessControl, IQEToken {
 
     function burnFromController(address from, uint256 amount)
         external
+        override
         onlyRole(QE_CONTROLLER_ROLE)
     {
         if (from == address(0)) revert ZeroAddress();
