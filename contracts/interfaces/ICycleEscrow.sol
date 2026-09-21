@@ -7,6 +7,7 @@ interface ICycleEscrow {
     function totalPrincipalOutstanding() external view returns (uint256);
     function principalOutstanding(uint256 cycleId) external view returns (uint256);
     function stateOf(uint256 cycleId) external view returns (CycleState);
+    function facilitatorOf(uint256 cycleId) external view returns (bytes32);
     function createCycle(
         uint256 cycleId,
         bytes32 facilitatorId,
