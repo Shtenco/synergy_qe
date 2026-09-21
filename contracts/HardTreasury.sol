@@ -26,6 +26,7 @@ contract HardTreasury is AccessControl, IHardTreasury {
 
     mapping(address => AssetConfig) public assetConfig;
     mapping(address => bool) public endogenousAsset;
+    mapping(address => bool) public registeredAsset;
     mapping(address => uint256) public reservedForSettlement;
     address[] public registeredAssets;
 
@@ -70,7 +71,8 @@ contract HardTreasury is AccessControl, IHardTreasury {
         if (endogenousAsset[asset]) revert EndogenousAssetForbidden(asset);
         if (haircutBps > BPS || maxExposureBps > BPS) revert InvalidBps();
 
-        if (!assetConfig[asset].enabled) {
+        if (!registeredAsset[asset]) {
+            registeredAsset[asset] = true;
             registeredAssets.push(asset);
         }
 
@@ -167,7 +169,9 @@ contract HardTreasury is AccessControl, IHardTreasury {
 
         uint256 balance = IERC20(asset).balanceOf(address(this));
         uint256 reserved = reservedForSettlement[asset];
-        if (amount > balance - reserved) revert ReservationExceedsBalance();
+        if (reserved >= balance || amount > balance - reserved) {
+            revert ReservationExceedsBalance();
+        }
 
         IERC20(asset).safeTransfer(to, amount);
     }
