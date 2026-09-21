@@ -27,6 +27,17 @@ contract QETokenTest is Test {
         vm.prank(collateralAdapter);
         token.collateralMint(alice, 50e18);
         assertEq(token.balanceOf(alice), 50e18);
+        assertEq(token.temporarySupply(), 0);
+    }
+
+    function test_QEMintAndControllerBurnTrackTemporarySupplyExactly() public {
+        vm.startPrank(controller);
+        token.qeMint(controller, 100e18);
+        assertEq(token.temporarySupply(), 100e18);
+
+        token.burnFromController(controller, 37e18);
+        assertEq(token.temporarySupply(), 63e18);
+        vm.stopPrank();
     }
 
     function test_AdminWithoutControllerRoleCannotQEMint() public {
