@@ -129,14 +129,20 @@ contract QECoreInvariants is StdInvariant, Test {
 
     function invariant_FacilitatorNeverExceedsBucketCapacity() public view {
         (
-            ,
-            ,
+            bool exists,
+            bool enabled,
             uint128 capacity,
             uint128 outstanding,
-            ,
-            ,
+            uint16 maxLossBps,
+            uint32 maxTtl,
+            uint16 riskWeightBps
         ) = registry.facilitator(ARB);
 
+        assertTrue(exists);
+        assertTrue(enabled);
+        assertGt(maxLossBps, 0);
+        assertGt(maxTtl, 0);
+        assertGt(riskWeightBps, 0);
         assertLe(uint256(outstanding), uint256(capacity));
     }
 }
