@@ -12,11 +12,11 @@ contract MockHardTreasury is IHardTreasury {
         nav = value;
     }
 
-    function hardValue(address) external pure returns (uint256) {
+    function hardValue(address) external pure override returns (uint256) {
         return 0;
     }
 
-    function hardNAV() external view returns (uint256) {
+    function hardNAV() external view override returns (uint256) {
         return nav;
     }
 }
