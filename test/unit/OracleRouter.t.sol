@@ -14,6 +14,7 @@ contract OracleRouterTest is Test {
     address internal asset = address(0x1001);
 
     function setUp() public {
+        vm.warp(1_000);
         router = new OracleRouter(address(this), address(this));
         oracle = new MockPriceAdapter();
         twap = new MockPriceAdapter();
