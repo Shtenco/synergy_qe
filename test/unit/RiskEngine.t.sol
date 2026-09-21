@@ -4,6 +4,7 @@ pragma solidity ^0.8.20;
 import {Test} from "forge-std/Test.sol";
 import {RiskEngine} from "../../contracts/RiskEngine.sol";
 import {MockHardTreasury} from "../../contracts/mocks/MockHardTreasury.sol";
+import {MockStabilityPool} from "../../contracts/mocks/MockStabilityPool.sol";
 import {SystemMode} from "../../contracts/types/QETypes.sol";
 
 contract RiskEngineTest is Test {
@@ -68,5 +69,14 @@ contract RiskEngineTest is Test {
         treasury.setHardNAV(10e18);
         uint256 afterCap = risk.capacityFor(ARB, SystemMode.NORMAL);
         assertLe(afterCap, beforeCap);
+    }
+
+    function test_WiredStabilityPoolIsAuthoritativeLossBudget() public {
+        MockStabilityPool pool = new MockStabilityPool();
+        pool.setAvailable(5e18);
+        risk.setStabilityPool(address(pool));
+
+        uint256 cap = risk.capacityFor(ARB, SystemMode.NORMAL);
+        assertEq(cap, 5e18);
     }
 }
