@@ -1,3 +1,11 @@
+<!-- SCIENTIFIC-V5-2026:START -->
+<img src="assets/readme/scientific-architecture-v5.svg" width="100%" alt="SYNERGY QE — Monetary Design scientific architecture"/>
+
+**[Научно-техническое досье V5: математика, исходники, тесты, ограничения](docs/SCIENTIFIC_DOSSIER_V5_2026.md)**  
+**Проверяемый статус:** STUB: README + LICENSE; исполняемых модулей и тестов нет. Предыдущий README ниже сохранён; наличие кода не означает подтверждённого production.
+
+<!-- SCIENTIFIC-V5-2026:END -->
+
 #  SYNERGY QE — verified specification dossier
 
 > **Домен:** Monetary / QE Engine R&D  
